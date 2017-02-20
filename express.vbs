@@ -46,7 +46,16 @@ With CreateObject("CDO.Message")
 	.From = Sender
 	.Subject = Title
 	.TextBody = Title
-	.Send
+
+	On Error Resume Next
+	Do
+		.Send
+		If Err.Number = 0 Then
+			Exit Do
+		ElseIf MsgBox("Operation failed: " & Err.Description, vbRetryCancel + vbCritical, Title) = vbCancel Then
+			WScript.Quit
+		End If
+	Loop
 End With
 
 MsgBox List & vbCrLf & Count & " file(s) sent to " & Receiver, vbInformation, Title
